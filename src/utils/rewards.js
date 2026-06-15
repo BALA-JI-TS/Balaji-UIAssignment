@@ -1,3 +1,10 @@
+/**
+     * Calculates reward points based on purchase amount.
+     * - 0 points for amounts <= 50
+     * - 1 point per dollar between 51–100
+     * - 2 points per dollar above 100, plus 50 points for the 51–100 range
+**/
+
 export const rewardPoints = (amount) => {
     const value = parseFloat(amount);
     if (isNaN(value)) return 0;
@@ -8,10 +15,20 @@ export const rewardPoints = (amount) => {
     return Math.floor((value - 100) * 2 + 50);
 };
 
+
+/**
+    * Formats a date string into "Month Year"
+**/
+
 export const getMonthYear = (date) => {
     const d = new Date(date);
     return `${d.toLocaleString("default", { month: "long" })} ${d.getFullYear()}`;
 };
+
+
+/**
+    * Transactions by customer and month, calculating total reward points
+**/
 
 export const getMonthlyRewards = (data) => {
     const grouped = data.reduce((acc, item) => {
@@ -34,6 +51,11 @@ export const getMonthlyRewards = (data) => {
 
     return Object.values(grouped);
 };
+
+
+/**
+    * Calculates total reward points per customer across all transactions.
+**/
 
 export const getTotalRewards = (data) => {
     const totals = data.reduce((acc, item) => {

@@ -1,3 +1,7 @@
+/**
+    * Custom React hook that debounces a value.
+**/
+
 import { useEffect, useState } from "react";
 
 export const useDebounce = (value, delay = 500) => {
@@ -10,6 +14,3 @@ export const useDebounce = (value, delay = 500) => {
 
     return debounced;
 };
-
-
-

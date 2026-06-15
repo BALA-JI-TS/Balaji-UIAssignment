@@ -1,9 +1,20 @@
 
+/**
+    * Main dashboard component for rewards.
+    * - Fetches transactions
+    * - Applied search filter
+    * - Displays monthly rewards, total rewards, and transactions
+ */
+
 import React, { useEffect, useState } from "react";
 import { transactionsData } from "../data/transactions";
 import { getMonthlyRewards, getTotalRewards } from "../utils/rewards";
 import { useDebounce } from "../hooks/useDebounce";
 import { rewardPoints } from "../utils/rewards";
+import Search from "./Search";
+import MonthlyRewards from "./MonthlyRewards";
+import TotalRewards from "./TotalRewards";
+import Transactions from "./Transactions";
 
 const TransactionRewards = () => {
     const [transactions, setTransactions] = useState([]);
@@ -14,10 +25,15 @@ const TransactionRewards = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
-            await new Promise((r) => setTimeout(r, 500));
-            setTransactions(transactionsData);
-            setLoading(false);
+            try {
+                setLoading(true);
+                await new Promise((r) => setTimeout(r, 500));
+                setTransactions(transactionsData);
+            } catch (error) {
+                console.error("Error fetching transactions:", error);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchData();
     }, []);
@@ -33,79 +49,11 @@ const TransactionRewards = () => {
     return (
         <div>
             <h2>Rewards Dashboard</h2>
-
-            <input
-                type="text"
-                placeholder="Search by customer ... "
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
-
+            <Search search={search} setSearch={setSearch} />
             {loading && <p>Loading ...</p>}
-
-            <h3>Monthly Rewards</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Month</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {monthlyRewards.map((r, i) => (
-                        <tr key={i}>
-                            <td>{r.customerId}</td>
-                            <td>{r.customerName}</td>
-                            <td>{r.monthYear}</td>
-                            <td>{r.rewardPts}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h3>Total Rewards</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {totalRewards.map((r, i) => (
-                        <tr key={i}>
-                            <td>{r.customerName}</td>
-                            <td>{r.rewardPts}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h3>Transactions</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Transaction Id</th>
-                        <th>Customer Name</th>
-                        <th>Purchase Date</th>
-                        <th>Amount</th>
-                        <th>Reward Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filtered.map((transaction, id) => (
-                        <tr key={transaction.id}>
-                            <td>{transaction.id}</td>
-                            <td>{transaction.customerName}</td>
-                            <td>{transaction.date}</td>
-                            <td>{transaction.amount.toFixed(2)}</td>
-                            <td>{rewardPoints(transaction.amount)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <MonthlyRewards monthlyRewards={monthlyRewards} />
+            <TotalRewards totalRewards={totalRewards} />
+            <Transactions filtered={filtered} rewardPoints={rewardPoints} />
         </div>
     );
 };
