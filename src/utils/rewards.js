@@ -6,13 +6,13 @@
 **/
 
 export const rewardPoints = (amount) => {
-    const value = parseFloat(amount);
+    const value = Math.floor(parseFloat(amount));
     if (isNaN(value)) return 0;
 
     if (value <= 50) return 0;
-    if (value <= 100) return Math.floor(value - 50);
+    if (value <= 100) return value - 50;
 
-    return Math.floor((value - 100) * 2 + 50);
+    return (value - 100) * 2 + 50;
 };
 
 
