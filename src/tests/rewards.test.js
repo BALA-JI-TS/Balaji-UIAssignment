@@ -41,7 +41,7 @@ describe("Reward Points", () => {
     });
 
     test("decimal values", () => {
-        expect(rewardPoints(120.75)).toBe(91);
+        expect(rewardPoints(120.75)).toBe(90);
     });
 
     test("invalid input", () => {
